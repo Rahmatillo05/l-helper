@@ -2,6 +2,7 @@
 
 namespace common\models\user;
 
+use common\components\Detect;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -16,17 +17,13 @@ use yii\web\IdentityInterface;
  * @property string $password_hash
  * @property string $email
  * @property string $auth_key
- * @property integer $status
+ * @property integer $phone_number
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password write-only password
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-    const STATUS_DELETED = 0;
-    const STATUS_INACTIVE = 9;
-    const STATUS_ACTIVE = 10;
-
 
     /**
      * {@inheritdoc}
@@ -52,8 +49,8 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            ['status', 'default', 'value' => self::STATUS_INACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
+            ['status', 'default', 'value' => Detect::STATUS_INACTIVE],
+            ['status', 'in', 'range' => [Detect::STATUS_ACTIVE, Detect::STATUS_INACTIVE]],
         ];
     }
 
@@ -62,7 +59,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentity($id): User|IdentityInterface|null
     {
-        return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['id' => $id, 'status' => Detect::STATUS_ACTIVE]);
     }
 
     /**
@@ -81,7 +78,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findByUsername(string $username)
     {
-        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['username' => $username, 'status' => Detect::STATUS_ACTIVE]);
     }
 
 
