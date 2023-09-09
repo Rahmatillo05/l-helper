@@ -17,9 +17,9 @@ class m130524_201442_init extends Migration
             'username' => $this->string()->notNull()->unique(),
             'auth_key' => $this->string(32)->notNull(),
             'password_hash' => $this->string()->notNull(),
-            'email' => $this->string()->notNull()->unique(),
-            'phone_number' => $this->integer()->notNull(),
-            'status' => $this->smallInteger()->notNull()->defaultValue(10),
+            'email' => $this->string()->unique(),
+            'phone_number' => $this->string()->unique(),
+            'status' => $this->smallInteger()->notNull()->defaultValue(9),
             'created_at' => $this->integer()->notNull(),
             'updated_at' => $this->integer()->notNull(),
         ], $tableOptions);

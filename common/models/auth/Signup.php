@@ -15,10 +15,50 @@ class Signup extends Model
     {
         return [
             [['verification', 'username', 'password'], 'required'],
-            [['verification', 'username', 'password'], 'string', 'min' => 3],
-            [['verification'], 'unique', 'targetClass' => User::class, 'targetAttribute' => ['email', 'phone_number']],
+            [['verification', 'username'], 'string', 'min' => 3],
+            [['password'], 'string', 'min' => 8],
+            ['verification', 'validateUnique'],
             [['username'], 'unique', 'targetClass' => User::class, 'targetAttribute' => 'username'],
         ];
     }
 
+    public function signup()
+    {
+        $user = new User();
+        $user->username = $this->username;
+        $user->setPassword($this->password);
+        $user->generateAuthKey();
+        $user->email = $this->isEmail();
+        $user->phone_number = $this->isPhoneNumber();
+        if ($user->save()){
+            return $user;
+        }
+        return $user->errors;
+    }
+
+    private function isEmail()
+    {
+        if (filter_var($this->verification, FILTER_VALIDATE_EMAIL)){
+            return $this->verification;
+        }
+        return null;
+    }
+
+    private function isPhoneNumber()
+    {
+        if (preg_match('/^998\d{9}$/', $this->verification)){
+            return $this->verification;
+        }
+        return null;
+    }
+
+    public function validateUnique($attribute, $params): void
+    {
+        $user = User::find()->where(['email' => $this->verification])
+            ->orWhere(['phone_number' => $this->verification])
+            ->all();
+        if (!empty($user)) {
+            $this->addError($attribute, "Siz yuborgan {$this->verification} nomi allaqachon ishlatilgan!");
+        }
+    }
 }

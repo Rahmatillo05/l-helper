@@ -8,6 +8,6 @@ class SiteController extends Controller
 {
     public function actionIndex(): string
     {
-        return "Say hello";
+        return "Welcome to Library Helper APP";
     }
 }
