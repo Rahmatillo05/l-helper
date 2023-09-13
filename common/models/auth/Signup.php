@@ -2,7 +2,9 @@
 
 namespace common\models\auth;
 
+use common\DTO\CreateUserDto;
 use common\models\user\User;
+use common\models\user\UserAuth;
 use yii\base\Model;
 
 class Signup extends Model
@@ -22,7 +24,7 @@ class Signup extends Model
         ];
     }
 
-    public function signup()
+    public function signup(): array|User
     {
         $user = new User();
         $user->username = $this->username;
@@ -31,7 +33,16 @@ class Signup extends Model
         $user->email = $this->isEmail();
         $user->phone_number = $this->isPhoneNumber();
         if ($user->save()){
-            return $user;
+            $userDto = new CreateUserDto();
+            $userDto->phone_number = $user->phone_number;
+            $userDto->email = $user->email;
+            $userDto->auth_key = $user->auth_key;
+            $userDto->password_hash = $user->password_hash;
+            $userDto->user_id = $user->id;
+            return [
+                'is_send_code'=> (new UserAuth())->sendVerificationCode($userDto),
+                'user_id' => $user->id
+            ];
         }
         return $user->errors;
     }

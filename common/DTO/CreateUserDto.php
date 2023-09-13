@@ -4,10 +4,10 @@ namespace common\DTO;
 
 class CreateUserDto
 {
-    public string $username;
-    public string $password_hash;
-    public string $auth_key;
-    public string $email;
-    public int $phone_number;
-
+    public string|null $username;
+    public string|null $password_hash;
+    public string|null $auth_key;
+    public string|null $email;
+    public int|null $phone_number;
+    public int $user_id;
 }
