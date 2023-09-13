@@ -7,6 +7,7 @@ use common\models\user\User;
 use common\repository\SmsProvider;
 use yii\base\ErrorException;
 use yii\base\InvalidConfigException;
+use yii\filters\Cors;
 use yii\rest\Controller;
 use yii\web\MethodNotAllowedHttpException;
 use yii\web\NotFoundHttpException;
@@ -15,6 +16,15 @@ use yii\web\Request;
 class AuthController extends Controller
 {
     public $defaultAction = "login";
+
+    public function behaviors(): array
+    {
+        $behaviors = parent::behaviors();
+        $behaviors['corsFilter'] = [
+            'class' => Cors::class
+        ];
+        return $behaviors;
+    }
 
     /**
      * @throws InvalidConfigException
@@ -42,9 +52,9 @@ class AuthController extends Controller
     {
         if ($request->isPost) {
             try {
-              $verification_code = $request->getBodyParams()['verification_code'];
-              return (new SmsProvider())->getToken();
-            }  catch (InvalidConfigException $e) {
+                $verification_code = $request->getBodyParams()['verification_code'];
+                return (new SmsProvider())->getToken();
+            } catch (InvalidConfigException $e) {
                 return ['message' => $e->getMessage(), 'code' => $e->getCode()];
             }
         }
@@ -62,7 +72,7 @@ class AuthController extends Controller
     private function findUser(int $user_id): User
     {
         $user = User::findOne($user_id);
-        if ($user instanceof User){
+        if ($user instanceof User) {
             return $user;
         }
         throw new NotFoundHttpException();
