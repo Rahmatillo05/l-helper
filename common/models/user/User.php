@@ -4,7 +4,6 @@ namespace common\models\user;
 
 use common\components\Detect;
 use Yii;
-use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\ForbiddenHttpException;
@@ -20,6 +19,8 @@ use yii\web\IdentityInterface;
  * @property string $auth_key
  * @property integer $phone_number
  * @property integer $created_at
+ * @property integer $status
+ * @property integer $user_type
  * @property integer $updated_at
  * @property string $password write-only password
  */

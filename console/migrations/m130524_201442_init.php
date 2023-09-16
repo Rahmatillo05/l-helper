@@ -20,6 +20,7 @@ class m130524_201442_init extends Migration
             'email' => $this->string()->unique(),
             'phone_number' => $this->string()->unique(),
             'status' => $this->smallInteger()->notNull()->defaultValue(9),
+            'user_type' => $this->smallInteger()->defaultValue(1),
             'created_at' => $this->integer()->notNull(),
             'updated_at' => $this->integer()->notNull(),
         ], $tableOptions);
