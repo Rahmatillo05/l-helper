@@ -5,6 +5,7 @@ namespace common\models\auth;
 use common\DTO\CreateUserDto;
 use common\models\user\User;
 use common\models\user\UserAuth;
+use yii\base\Exception;
 use yii\base\Model;
 
 class Signup extends Model
@@ -24,6 +25,9 @@ class Signup extends Model
         ];
     }
 
+    /**
+     * @throws Exception
+     */
     public function signup(): array|User
     {
         $user = new User();

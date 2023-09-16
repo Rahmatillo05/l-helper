@@ -9,6 +9,7 @@ use common\repository\SmsProvider;
 use frontend\models\ConformAccount;
 use Yii;
 use yii\base\ErrorException;
+use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\filters\Cors;
 use yii\rest\Controller;
@@ -30,7 +31,6 @@ class AuthController extends Controller
     }
 
     /**
-     * @throws InvalidConfigException
      * @throws MethodNotAllowedHttpException
      */
     public function actionSignup(Request $request): array|User
@@ -46,17 +46,39 @@ class AuthController extends Controller
                 }
             } catch (ErrorException $exception) {
                 return ['message' => $exception->getMessage(), 'code' => $exception->getCode()];
+            } catch (Exception $e) {
+                return ['message' => $e->getMessage(), 'code' => $e->getCode()];
             }
         }
         throw new MethodNotAllowedHttpException();
     }
 
-    public function actionConfirmAccount()
+    /**
+     * @throws MethodNotAllowedHttpException
+     * @throws Exception
+     */
+    public function actionConfirmAccount(): bool|array|UserAuth
     {
         $model = new ConformAccount();
-        if (Yii::$app->request->isPost){
-            if ($model->load($this->request->post(), '')){
+        if (Yii::$app->request->isPost) {
+            if ($model->load($this->request->post(), '')) {
                 return $model->verifyUser();
+            }
+        }
+        throw new MethodNotAllowedHttpException();
+    }
+
+    /**
+     * @throws InvalidConfigException
+     * @throws NotFoundHttpException
+     * @throws MethodNotAllowedHttpException
+     */
+    public function actionResendCode(Request $request)
+    {
+        if ($request->isPost) {
+            $data = $request->getBodyParams();
+            if (!empty($data['user_token'])) {
+                return (new ConformAccount())->resendCode($data['user_token']);
             }
         }
         throw new MethodNotAllowedHttpException();

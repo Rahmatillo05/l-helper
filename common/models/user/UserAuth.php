@@ -6,6 +6,7 @@ use common\DTO\CreateUserDto;
 use common\repository\SmsProvider;
 use mrmuminov\eskizuz\request\sms\SmsSendRequest;
 use Yii;
+use yii\base\Exception;
 use yii\db\ActiveQuery;
 use yii\httpclient\Response;
 
@@ -70,11 +71,14 @@ class UserAuth extends \yii\db\ActiveRecord
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
-    private function generateVerificationCode(): int
+    public function generateVerificationCode(): int
     {
         return rand(100000, 999999);
     }
 
+    /**
+     * @throws Exception
+     */
     public function sendVerificationCode(CreateUserDto $user): array
     {
         $userAuth = new $this;
@@ -95,13 +99,13 @@ class UserAuth extends \yii\db\ActiveRecord
         ];
     }
 
-    private function sendSmsCode(string $phone_number, string $code)
+    public function sendSmsCode(string $phone_number, string $code)
     {
         $text = "Sizning tasdiqlash raqamingiz: $code";
         return (new SmsProvider())->sendSMS($phone_number, $text);
     }
 
-    private function sendEmail(string $email): bool
+    public function sendEmail(string $email): bool
     {
         return true;
     }

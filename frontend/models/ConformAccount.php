@@ -5,8 +5,10 @@ namespace frontend\models;
 use common\components\Detect;
 use common\models\user\User;
 use common\models\user\UserAuth;
+use yii\base\Exception;
 use yii\base\Model;
 use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
 
 /**
  * @property string $user_token
@@ -25,6 +27,9 @@ class ConformAccount extends Model
         ];
     }
 
+    /**
+     * @throws Exception
+     */
     public function verifyUser(): bool|array|UserAuth
     {
         $_user = $this->getUser();
@@ -69,5 +74,22 @@ class ConformAccount extends Model
             return $user_auth;
         }
         return $data;
+    }
+
+    /**
+     * @throws NotFoundHttpException
+     */
+    public function resendCode(string $user_token)
+    {
+        $userAuth = UserAuth::findOne(['relation_token' => $user_token]);
+        if ($userAuth) {
+            $userAuth->verification_code = $userAuth->generateVerificationCode();
+            $userAuth->code_expiration_date = time() + 60 * 3;
+            $userAuth->save();
+            return $userAuth->user->email
+                ? $userAuth->sendEmail($userAuth->user->email, $userAuth->verification_code)
+                : $userAuth->sendSmsCode($userAuth->user->phone_number, $userAuth->verification_code);
+        }
+        throw new NotFoundHttpException();
     }
 }
