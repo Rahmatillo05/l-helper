@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\auth\ApiLogin;
 use common\models\auth\Signup;
 use common\models\user\User;
 use common\models\user\UserAuth;
@@ -84,9 +85,18 @@ class AuthController extends Controller
         throw new MethodNotAllowedHttpException();
     }
 
-    public function actionLogin(): string
+    /**
+     * @throws Exception
+     * @throws MethodNotAllowedHttpException
+     */
+    public function actionLogin(): bool|array
     {
-        return "Log IN";
+        $model = new ApiLogin();
+        if (Yii::$app->request->isPost){
+            $model->load(Yii::$app->request->post(), '');
+            return $model->login();
+        }
+        throw new MethodNotAllowedHttpException();
     }
 
     /**

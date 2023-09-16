@@ -7,6 +7,7 @@ use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\web\ForbiddenHttpException;
 use yii\web\IdentityInterface;
 
 /**
@@ -64,10 +65,16 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * {@inheritdoc}
+     * @throws ForbiddenHttpException
      */
-    public static function findIdentityByAccessToken($token, $type = null)
+    public static function findIdentityByAccessToken($token, $type = null): User|IdentityInterface|null
     {
-        throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
+        $userAuth = UserAuth::find()->where(['token' => $token])
+            ->andWhere(['>', 'token_expiration_date', time()])->one();
+        if ($userAuth){
+            return self::findOne(['id' => $userAuth->user_id, 'status' => Detect::STATUS_ACTIVE]);
+        }
+        throw new ForbiddenHttpException("Siz yuborgan token eskirgan yoki bunday foydalanuvchi mavjud emas!");
     }
 
     /**
@@ -76,7 +83,7 @@ class User extends ActiveRecord implements IdentityInterface
      * @param string $username
      * @return static|null
      */
-    public static function findByUsername(string $username)
+    public static function findByUsername(string $username): static
     {
         return static::findOne(['username' => $username, 'status' => Detect::STATUS_ACTIVE]);
     }

@@ -16,7 +16,7 @@ class BaseController extends ActiveController
     /**
      * @return array|array[]
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         $behaviors = parent::behaviors();
 
