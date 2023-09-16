@@ -4,6 +4,7 @@ namespace common\models\user;
 
 use common\DTO\CreateUserDto;
 use common\repository\SmsProvider;
+use mrmuminov\eskizuz\request\sms\SmsSendRequest;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\httpclient\Response;
@@ -13,8 +14,8 @@ use yii\httpclient\Response;
  *
  * @property int $id
  * @property int|null $verification_code
- * @property string|null $token
- * @property int|null $code_expiration_date
+ * @property string|null $relation_token
+ * * @property int|null $code_expiration_date
  * @property int|null $token_expiration_date
  * @property int $user_id
  *
@@ -38,7 +39,7 @@ class UserAuth extends \yii\db\ActiveRecord
         return [
             [['verification_code', 'code_expiration_date', 'token_expiration_date', 'user_id'], 'integer'],
             [['user_id'], 'required'],
-            [['token'], 'string', 'max' => 255],
+            [['token', 'relation_token'], 'string', 'max' => 255],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -52,6 +53,7 @@ class UserAuth extends \yii\db\ActiveRecord
             'id' => 'ID',
             'verification_code' => 'Verification Code',
             'token' => 'Token',
+            'relation_token' => 'User Token',
             'code_expiration_date' => 'Code Expiration Date',
             'token_expiration_date' => 'Token Expiration Date',
             'user_id' => 'User ID',
@@ -73,21 +75,27 @@ class UserAuth extends \yii\db\ActiveRecord
         return rand(100000, 999999);
     }
 
-    public function sendVerificationCode(CreateUserDto $user): bool|array
+    public function sendVerificationCode(CreateUserDto $user): array
     {
         $userAuth = new $this;
         $userAuth->user_id = $user->user_id;
         $userAuth->verification_code = $this->generateVerificationCode();
-        $userAuth->code_expiration_date = time() + 3600 * 3;
-        if ($user->email) {
-            $userAuth->save();
-            return $userAuth->sendEmail($user->email);
-        }
+        $userAuth->code_expiration_date = time() + 60 * 3;
+        $userAuth->relation_token = Yii::$app->security->generateRandomString();
         $userAuth->save();
-        return $userAuth->sendSmsCode($user->phone_number, $userAuth->verification_code);
+        if ($user->email) {
+            return [
+                'relation_token' => $userAuth->relation_token,
+                'status_code' => $userAuth->sendEmail($user->email)
+            ];
+        }
+        return [
+            'relation_token' => $userAuth->relation_token,
+            'status_code' => $userAuth->sendSmsCode($user->phone_number, $userAuth->verification_code)
+        ];
     }
 
-    private function sendSmsCode(string $phone_number, string $code): bool|array
+    private function sendSmsCode(string $phone_number, string $code)
     {
         $text = "Sizning tasdiqlash raqamingiz: $code";
         return (new SmsProvider())->sendSMS($phone_number, $text);

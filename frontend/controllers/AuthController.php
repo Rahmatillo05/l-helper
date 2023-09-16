@@ -4,7 +4,10 @@ namespace frontend\controllers;
 
 use common\models\auth\Signup;
 use common\models\user\User;
+use common\models\user\UserAuth;
 use common\repository\SmsProvider;
+use frontend\models\ConformAccount;
+use Yii;
 use yii\base\ErrorException;
 use yii\base\InvalidConfigException;
 use yii\filters\Cors;
@@ -48,14 +51,12 @@ class AuthController extends Controller
         throw new MethodNotAllowedHttpException();
     }
 
-    public function actionConfirmAccount(Request $request, int $user_id): array
+    public function actionConfirmAccount()
     {
-        if ($request->isPost) {
-            try {
-                $verification_code = $request->getBodyParams()['verification_code'];
-                return (new SmsProvider())->getToken();
-            } catch (InvalidConfigException $e) {
-                return ['message' => $e->getMessage(), 'code' => $e->getCode()];
+        $model = new ConformAccount();
+        if (Yii::$app->request->isPost){
+            if ($model->load($this->request->post(), '')){
+                return $model->verifyUser();
             }
         }
         throw new MethodNotAllowedHttpException();

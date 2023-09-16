@@ -18,6 +18,7 @@ class m230906_042736_create_user_auth_table extends Migration
             'token' => $this->string(),
             'code_expiration_date' => $this->integer(),
             'token_expiration_date' => $this->integer(),
+            'relation_token' => $this->string(),
             'user_id' => $this->integer()->notNull()
         ]);
         $this->addForeignKey('fk-to-user-from-user_auth', 'user_auth', 'user_id', 'user', 'id', 'CASCADE');

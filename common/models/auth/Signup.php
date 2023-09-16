@@ -39,9 +39,10 @@ class Signup extends Model
             $userDto->auth_key = $user->auth_key;
             $userDto->password_hash = $user->password_hash;
             $userDto->user_id = $user->id;
+            $response = (new UserAuth())->sendVerificationCode($userDto);
             return [
-                'is_send_code'=> (new UserAuth())->sendVerificationCode($userDto),
-                'user_id' => $user->id
+                'status_code'=> $response['status_code'],
+                'user_token' => $response['relation_token']
             ];
         }
         return $user->errors;

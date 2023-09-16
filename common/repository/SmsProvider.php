@@ -2,71 +2,52 @@
 
 namespace common\repository;
 
+use mrmuminov\eskizuz\Eskiz;
+use mrmuminov\eskizuz\request\auth\AuthLoginRequest;
+use mrmuminov\eskizuz\types\sms\SmsSingleSmsType;
 use yii\base\Exception;
 use yii\httpclient\Client;
 
 class SmsProvider
 {
-    protected string $token;
-    public string $email;
-    public string $key;
+
     private string $baseUrl = 'https://notify.eskiz.uz/api';
-    public Client $client;
+    public Eskiz $client;
+
+    /**
+     * @throws \Exception
+     */
     public function __construct()
     {
-        $this->client = new Client([
-            'baseUrl' => $this->baseUrl,
-            'requestConfig' => [
-                'format' => Client::FORMAT_JSON
-            ],
-            'responseConfig' => [
-                'format' => Client::FORMAT_JSON
-            ],
-        ]);
-        $this->token = $this->getToken();
+        $this->client = new Eskiz(\Yii::$app->params['eskiz_email'], \Yii::$app->params['eskiz_key']);
+        $this->client->requestAuthLogin();
     }
 
-    public function getToken()
-    {
-        try {
-            $response = $this->client
-                ->post('/auth/login', [
-                'email' => \Yii::$app->params['eskiz_email'],
-                'password' => \Yii::$app->params['eskiz_key'],
-            ])->send();
-            return $response->getData()['data']['token'];
-        } catch (Exception $exception){
-            return [
-                'message' => $exception->getMessage(),
-                'code' => $exception->getCode()
-            ];
-        }
-    }
-
-    public function sendSMS(string $phone_number, $text): bool|array
-    {
-        $phone_number = $this->sanitizePhone($phone_number);
-        try {
-            $response = $this->client->createRequest()
-                ->setHeaders([
-                    'Authorization' => "Bearer {$this->token}"
-                ])
-                ->setData([
-                    'mobile_phone' => $phone_number,
-                    'message' => $text,
-                    'from' => \Yii::$app->params['nick']
-                ])->send();
-            return $response->getData();
-        } catch (Exception $exception){
-            return [
-                'message' => $exception->getMessage(),
-                'code' => $exception->getCode()
-            ];
-        }
-    }
+    
 
     public function sanitizePhone(string $phone): string
     {
         return preg_replace('/[^0-9]/', '', $phone);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function getToken(): string
+    {
+        return $this->client->requestAuthLogin()->response->token;
+    }
+
+    public function sendSMS(string $phone_number, string $text)
+    {
+        $message = new SmsSingleSmsType(
+          from: \Yii::$app->params['nick'],
+          message: $text,
+          mobile_phone: $this->sanitizePhone($phone_number),
+          user_sms_id:rand(999, 9999)
+        );
+
+        $response = $this->client->requestSmsSend($message)->getResponse();
+        return $response->client->statusCode;
     }
 }
