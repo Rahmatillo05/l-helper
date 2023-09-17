@@ -66,7 +66,7 @@ class ConformAccount extends Model
         $data = [];
         if (!$user_auth) {
             $data['status_code'] = 404;
-            $data['error_message'] = "Siz yuborgan tasdiqlash kodi mavjud emas!";
+            $data['error_message'] = "Siz yuborgan tasdiqlash kodi xato!";
         } elseif ($user_auth->code_expiration_date <= time()) {
             $data['status_code'] = 410;
             $data['error_message'] = "Siz yuborgan tasdiqlash kodi eskirgan!";
