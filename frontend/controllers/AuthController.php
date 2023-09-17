@@ -43,7 +43,7 @@ class AuthController extends Controller
                 if ($model->validate()) {
                     return $model->signup();
                 } else {
-                    Yii::$app->response->statusCode = 500;
+                    Yii::$app->response->statusCode = 400;
                     return $model->errors;
                 }
             } catch (ErrorException $exception) {

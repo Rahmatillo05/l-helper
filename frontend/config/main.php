@@ -15,6 +15,11 @@ return [
     'bootstrap' => ['log'],
     'language' => 'uz',
     'controllerNamespace' => 'frontend\controllers',
+    'modules' => [
+        'file-manager' => [
+            'class' => 'frontend\modules\file\FileManager',
+        ],
+    ],
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-frontend',
