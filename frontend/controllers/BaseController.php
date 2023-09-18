@@ -27,7 +27,6 @@ class BaseController extends ActiveController
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::class,
         ];
-        $behaviors['authenticator']['only'] = ['create', 'update', 'delete'];
 
 
         return $behaviors;

@@ -14,6 +14,7 @@ return [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'language' => 'uz',
+    'timeZone' => 'Asia/Tashkent',
     'controllerNamespace' => 'frontend\controllers',
     'modules' => [
         'file-manager' => [
@@ -30,12 +31,7 @@ return [
         ],
         'user' => [
             'identityClass' => 'common\models\user\User',
-            'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-api', 'httpOnly' => true],
-        ],
-        'session' => [
-            // this is the name of the session cookie used for login on the frontend
-            'name' => 'advanced-frontend',
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -57,8 +53,12 @@ return [
             'rules' => [
                 [
                     'class' => UrlRule::class,
-                    'controller' => ['site']
-                ]
+                    'controller' => [
+                        'site',
+                        'auth',
+                    ],
+                    'pluralize' => false
+                ],
             ],
         ],
 

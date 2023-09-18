@@ -28,13 +28,6 @@ return [
         ],
         'migrate-file' => [
             'class' => \yii\console\controllers\MigrateController::class,
-            'generatorTemplateFiles' => [
-                'create_table' => '@console/views/createTableMigration.php',
-                'drop_table' => '@yii/views/dropTableMigration.php',
-                'add_column' => '@yii/views/addColumnMigration.php',
-                'drop_column' => '@yii/views/dropColumnMigration.php',
-                'create_junction' => '@yii/views/createTableMigration.php',
-            ],
             'migrationPath' => '@frontend/modules/file/migrations'
         ],
     ],
