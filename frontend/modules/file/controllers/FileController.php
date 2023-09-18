@@ -6,8 +6,10 @@ use frontend\controllers\BaseController;
 use frontend\modules\file\models\File;
 use frontend\modules\file\models\FileUpload;
 use Yii;
+use yii\base\Exception;
 use yii\helpers\Url;
 use yii\web\MethodNotAllowedHttpException;
+use yii\web\ServerErrorHttpException;
 use yii\web\UploadedFile;
 
 class FileController extends BaseController
@@ -32,12 +34,16 @@ class FileController extends BaseController
     /**
      * @throws MethodNotAllowedHttpException
      */
-    public function actionUpload()
+    public function actionUpload(): array
     {
         $model = new FileUpload();
         if ($this->request->isPost) {
             $files = UploadedFile::getInstancesByName('files');
-            return $model->upload($files);
+            try {
+                return $model->upload($files);
+            } catch (ServerErrorHttpException|Exception $e) {
+                return ['status' => $e->getCode(), 'message' => $e->getMessage()];
+            }
         }
         throw new MethodNotAllowedHttpException();
     }
