@@ -27,6 +27,7 @@ return [
             'baseUrl' => '',
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
+                'multipart/form-data' => 'yii\web\MultipartFormDataParser'
             ]
         ],
         'user' => [

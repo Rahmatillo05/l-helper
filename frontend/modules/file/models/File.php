@@ -3,13 +3,15 @@
 namespace frontend\modules\file\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "file".
  *
  * @property int $id
  * @property string|null $title
- * @property string|null $description
+ * @property string|null $files
+ * * @property string|null $description
  * @property string|null $ext
  * @property int|null $size
  * @property string|null $path
@@ -28,6 +30,15 @@ class File extends \yii\db\ActiveRecord
         return 'file';
     }
 
+    public function behaviors(): array
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class
+          ]
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -37,6 +48,7 @@ class File extends \yii\db\ActiveRecord
             [['description', 'path', 'domain'], 'string'],
             [['size', 'created_at', 'updated_at', 'user_id'], 'integer'],
             [['title', 'ext'], 'string'],
+            [['files'], 'string']
         ];
     }
 
