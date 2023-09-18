@@ -57,6 +57,7 @@ return [
                     'controller' => [
                         'site',
                         'auth',
+                        'file'
                     ],
                     'pluralize' => false
                 ],

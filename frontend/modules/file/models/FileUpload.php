@@ -42,6 +42,7 @@ class FileUpload extends Model
         if (count($files) > 0) {
             $transaction = Yii::$app->db->beginTransaction();
             try {
+                $data = [];
                 foreach ($files as $file) {
                     /**
                      * @var UploadedFile $file
@@ -56,12 +57,13 @@ class FileUpload extends Model
                     $db_file->domain = Yii::$app->params['domain'];
                     $db_file->size = $file->size;
                     if ($file->saveAs("$path/$db_file->files") && $db_file->save()) {
+                        $data[] = $db_file->id;
                         continue;
                     }
                     throw new ServerErrorHttpException("Fayllar saqlanmadi");
                 }
                 $transaction->commit();
-                return ['status' => 200, 'message' => "Barcha fayllar saqlandi!"];
+                return ['status' => 200, 'message' => "Barcha fayllar saqlandi!", 'data' => $data];
             } catch (Exception $exception) {
                 $transaction->rollBack();
                 return ['status' => $exception->getCode(), 'message' => $exception->getMessage()];

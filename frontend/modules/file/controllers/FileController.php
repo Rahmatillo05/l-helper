@@ -7,6 +7,7 @@ use frontend\modules\file\models\File;
 use frontend\modules\file\models\FileUpload;
 use Yii;
 use yii\base\Exception;
+use yii\data\ActiveDataProvider;
 use yii\helpers\Url;
 use yii\web\MethodNotAllowedHttpException;
 use yii\web\ServerErrorHttpException;
@@ -22,14 +23,26 @@ class FileController extends BaseController
     public function actions(): array
     {
         $actions = parent::actions();
-        unset($actions['index'], $actions['view'], $actions['delete'], $actions['update']);
+        unset($actions['index'], $actions['delete'], $actions['update']);
         return $actions;
     }
 
-    public function actionFiles()
+    public function actionFiles(): ActiveDataProvider
     {
-        return "Hello";
+        return new ActiveDataProvider([
+            'query' => File::find(),
+            'pagination' => [
+                'pageSize' => 50
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'id' => SORT_DESC
+                ]
+            ]
+        ]);
     }
+
+
 
     /**
      * @throws MethodNotAllowedHttpException
