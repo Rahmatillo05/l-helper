@@ -42,7 +42,11 @@ class FileController extends BaseController
         ]);
     }
 
-
+    public function actionThumb($id)
+    {
+        $file = File::findOne($id);
+        return (new FileUpload())->createThumbs($file);
+    }
 
     /**
      * @throws MethodNotAllowedHttpException

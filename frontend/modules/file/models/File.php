@@ -4,14 +4,16 @@ namespace frontend\modules\file\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "file".
  *
  * @property int $id
  * @property string|null $title
- * @property string|null $files
- * * @property string|null $description
+ * @property string|null $file
+ * @property string|null $slug
+ * @property string|null $description
  * @property string|null $ext
  * @property int|null $size
  * @property string|null $path
@@ -47,8 +49,7 @@ class File extends \yii\db\ActiveRecord
         return [
             [['description', 'path', 'domain'], 'string'],
             [['size', 'created_at', 'updated_at', 'user_id'], 'integer'],
-            [['title', 'ext'], 'string'],
-            [['files'], 'string']
+            [['title', 'ext', 'file', 'slug'], 'string'],
         ];
     }
 
@@ -60,6 +61,8 @@ class File extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'title' => 'Title',
+            'file' => 'File',
+            'slug' => 'Slug',
             'description' => 'Description',
             'ext' => 'Ext',
             'size' => 'Size',
@@ -69,5 +72,29 @@ class File extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
             'user_id' => 'User ID',
         ];
+    }
+
+    public function fields(): array
+    {
+        return ArrayHelper::merge(parent::fields(), [
+           'thumbs' 
+        ]);
+    }
+    
+    public function getDist(): string
+    {
+        return "{$this->path}/{$this->file}";
+    }
+
+    public function getThumbs(): array
+    {
+        $thumbs = Yii::$app->params['thumbs'];
+        $thumbsImage = [];
+        foreach ($thumbs as $key => $val){
+            $slug = $val['slug'];
+            $thumbsImage[$key]['src'] = "{$this->domain}{$this->path}/{$this->slug}_$slug.{$this->ext}";
+            $thumbsImage[$key]['path'] = "{$this->path}/{$this->slug}_$slug.{$this->ext}";
+        }
+        return $thumbsImage;
     }
 }
