@@ -65,7 +65,7 @@ class ConformAccount extends Model
         ])->one();
         $data = [];
         if (!$user_auth) {
-            $data['status_code'] = 404;
+            $data['status_code'] = 422;
             $data['error_message'] = "Siz yuborgan tasdiqlash kodi xato!";
         } elseif ($user_auth->code_expiration_date <= time()) {
             $data['status_code'] = 410;
