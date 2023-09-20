@@ -74,7 +74,7 @@ class Signup extends Model
             ->orWhere(['phone_number' => $this->verification])
             ->all();
         if (!empty($user)) {
-            $this->addError($attribute, "Siz yuborgan {$this->verification} nomi mavjud!");
+            $this->addError($attribute, "Siz yuborgan {$this->verification} avvalroq band qilingan!");
         }
     }
 }
