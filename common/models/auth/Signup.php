@@ -2,6 +2,7 @@
 
 namespace common\models\auth;
 
+use common\components\Helper;
 use common\DTO\CreateUserDto;
 use common\models\user\User;
 use common\models\user\UserAuth;
@@ -34,8 +35,8 @@ class Signup extends Model
         $user->username = $this->username;
         $user->setPassword($this->password);
         $user->generateAuthKey();
-        $user->email = $this->isEmail();
-        $user->phone_number = $this->isPhoneNumber();
+        $user->email = Helper::isEmail($this->verification);
+        $user->phone_number = Helper::isPhoneNumber($this->verification);
         if ($user->save()){
             $userDto = new CreateUserDto();
             $userDto->phone_number = $user->phone_number;
@@ -52,21 +53,7 @@ class Signup extends Model
         return $user->errors;
     }
 
-    private function isEmail()
-    {
-        if (filter_var($this->verification, FILTER_VALIDATE_EMAIL)){
-            return $this->verification;
-        }
-        return null;
-    }
 
-    private function isPhoneNumber()
-    {
-        if (preg_match('/^998\d{9}$/', $this->verification)){
-            return $this->verification;
-        }
-        return null;
-    }
 
     public function validateUnique($attribute, $params): void
     {

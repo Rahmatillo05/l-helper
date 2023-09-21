@@ -1,13 +1,12 @@
 <?php
 
-namespace frontend\models;
+namespace common\models\auth;
 
 use common\components\Detect;
 use common\models\user\User;
 use common\models\user\UserAuth;
 use yii\base\Exception;
 use yii\base\Model;
-use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
 /**

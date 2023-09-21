@@ -16,6 +16,7 @@ use yii\httpclient\Response;
  * @property int $id
  * @property int|null $verification_code
  * @property string|null $relation_token
+ * @property string|null $token
  * * @property int|null $code_expiration_date
  * @property int|null $token_expiration_date
  * @property int $user_id

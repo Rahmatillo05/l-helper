@@ -3,11 +3,11 @@
 namespace frontend\controllers;
 
 use common\models\auth\ApiLogin;
+use common\models\auth\ConformAccount;
+use common\models\auth\RestoreAccount;
 use common\models\auth\Signup;
 use common\models\user\User;
 use common\models\user\UserAuth;
-use common\repository\SmsProvider;
-use frontend\models\ConformAccount;
 use Yii;
 use yii\base\ErrorException;
 use yii\base\Exception;
@@ -86,6 +86,16 @@ class AuthController extends Controller
         throw new MethodNotAllowedHttpException();
     }
 
+    public function actionRestoreAccount()
+    {
+        $model = new RestoreAccount();
+        if (Yii::$app->request->isPost){
+            $model->load(Yii::$app->request->post(), '');
+            return $model->restore();
+        }
+        throw new MethodNotAllowedHttpException();
+    }
+    
     /**
      * @throws Exception
      * @throws MethodNotAllowedHttpException

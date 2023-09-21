@@ -3,10 +3,7 @@
 namespace common\repository;
 
 use mrmuminov\eskizuz\Eskiz;
-use mrmuminov\eskizuz\request\auth\AuthLoginRequest;
 use mrmuminov\eskizuz\types\sms\SmsSingleSmsType;
-use yii\base\Exception;
-use yii\httpclient\Client;
 
 class SmsProvider
 {
