@@ -1,6 +1,7 @@
 <?php
 
 use yii\rest\UrlRule;
+use yii\web\Response;
 
 $params = array_merge(
     require __DIR__ . '/../../common/config/params.php',
@@ -30,6 +31,10 @@ return [
                 'multipart/form-data' => 'yii\web\MultipartFormDataParser'
             ]
         ],
+        'response' => [
+            'class' => Response::class,
+            'format' => Response::FORMAT_JSON
+        ],
         'user' => [
             'identityClass' => 'common\models\user\User',
             'identityCookie' => ['name' => '_identity-api', 'httpOnly' => true],
@@ -42,9 +47,6 @@ return [
                     'levels' => ['error', 'warning'],
                 ],
             ],
-        ],
-        'errorHandler' => [
-            'errorAction' => 'site/error',
         ],
 
         'urlManager' => [

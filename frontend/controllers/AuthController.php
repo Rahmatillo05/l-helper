@@ -86,7 +86,12 @@ class AuthController extends Controller
         throw new MethodNotAllowedHttpException();
     }
 
-    public function actionRestoreAccount()
+    /**
+     * @throws Exception
+     * @throws NotFoundHttpException
+     * @throws MethodNotAllowedHttpException
+     */
+    public function actionRestoreAccount(): array
     {
         $model = new RestoreAccount();
         if (Yii::$app->request->isPost){

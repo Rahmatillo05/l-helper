@@ -53,9 +53,15 @@ class ApiLogin extends Model
         if ($this->validate()) {
             if ($this->_user) {
                 $auth = UserAuth::findOne(['user_id' => $this->_user->id]);
+                if ($this->_user->username === 'admin'){
+                    $auth = new UserAuth();
+                    $auth->user_id = $this->_user->id;
+                }
                 $auth->token = Yii::$app->security->generateRandomString(128);
                 $auth->token_expiration_date = time() + 3600 * 24 * 30;
-                $auth->save();
+                if (!$auth->save()){
+                    return $auth->errors;
+                }
                 return [
                     'token' => $auth->token,
                     'user' => $this->_user

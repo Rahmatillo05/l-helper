@@ -9,13 +9,17 @@ class m230916_105149_create_user_profile_table extends Migration
 {
     /**
      * {@inheritdoc}
+     * @throws \yii\base\Exception
      */
     public function safeUp()
     {
         $this->createTable('{{%user_profile}}', [
             'user_id' => $this->integer()->notNull(),
-            'photo' => $this->string()
+            'image_id' => $this->integer(),
+            'bio' => $this->text(),
+            'social_accounts' => $this->json(),
         ]);
+        $this->addForeignKey('fk-to-user-from-user_profile', 'user_profile', 'user_id', 'user', 'id');
     }
 
     /**
@@ -23,6 +27,7 @@ class m230916_105149_create_user_profile_table extends Migration
      */
     public function safeDown()
     {
+        $this->dropForeignKey('fk-to-user-from-user_profile', 'user_profile');
         $this->dropTable('{{%user_profile}}');
     }
 }

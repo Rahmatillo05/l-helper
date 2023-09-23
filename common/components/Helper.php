@@ -2,6 +2,8 @@
 
 namespace common\components;
 
+use yii\helpers\Json;
+
 class Helper
 {
     public static function isEmail(string $verification): ?string
@@ -16,6 +18,14 @@ class Helper
     {
         if (preg_match('/^998\d{9}$/', $verification)) {
             return $verification;
+        }
+        return null;
+    }
+
+    public static function jsonEncode( $data): string|null
+    {
+        if ($data) {
+            return Json::encode($data);
         }
         return null;
     }
