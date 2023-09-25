@@ -1,5 +1,6 @@
 <?php
 
+use common\components\Detect;
 use yii\db\Migration;
 
 class m130524_201442_init extends Migration
@@ -29,6 +30,7 @@ class m130524_201442_init extends Migration
             'username' => 'admin',
             'password_hash'=>  Yii::$app->security->generatePasswordHash('12345678'),
             'auth_key' => Yii::$app->security->generateRandomString(),
+            'status' => Detect::STATUS_ACTIVE,
             'created_at' => time(),
             'updated_at' => time(),
         ]);
