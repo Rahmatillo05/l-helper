@@ -95,6 +95,8 @@ class File extends \yii\db\ActiveRecord
             $thumbsImage[$key]['src'] = "{$this->domain}{$this->path}/{$this->slug}_$slug.{$this->ext}";
             $thumbsImage[$key]['path'] = "{$this->path}/{$this->slug}_$slug.{$this->ext}";
         }
+        $thumbsImage['original']['src'] = "{$this->domain}{$this->path}/{$this->slug}.{$this->ext}";
+        $thumbsImage['original']['path'] = "{$this->path}/{$this->slug}.{$this->ext}";
         return $thumbsImage;
     }
 }
