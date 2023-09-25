@@ -39,7 +39,7 @@ class ApiLogin extends Model
         if (!$this->hasErrors()) {
             $user = $this->getUser();
             if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Foydalanuvchi nomi yoki parol noto\'g\'ri!');
+                $this->addError('errorMessage', 'Foydalanuvchi nomi yoki parol noto\'g\'ri!');
             }
         }
     }
@@ -68,8 +68,8 @@ class ApiLogin extends Model
                 ];
             }
         }
-
-        return false;
+        Yii::$app->response->statusCode = 422;
+        return $this->errors;
     }
 
     /**
