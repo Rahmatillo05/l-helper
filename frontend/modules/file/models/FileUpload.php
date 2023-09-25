@@ -3,11 +3,15 @@
 namespace frontend\modules\file\models;
 
 use Yii;
+use yii\base\ErrorException;
 use yii\base\Model;
 use yii\db\Exception;
+use yii\db\StaleObjectException;
 use yii\helpers\Url;
 use yii\imagine\Image;
+use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
+use yii\web\UploadedFile;
 
 class FileUpload extends Model
 {
@@ -24,7 +28,7 @@ class FileUpload extends Model
      * @throws \yii\base\Exception
      * @throws ServerErrorHttpException
      */
-    public function upload(array $files)
+    public function upload(array $files, int|null $id = null): array
     {
         $y = date('Y');
         $m = date('m');
@@ -43,7 +47,7 @@ class FileUpload extends Model
             try {
                 $data = [];
                 foreach ($files as $file) {
-                    $db_file = new File();
+                    $db_file = $id ? $this->findModel($id) : new File();
                     $db_file->slug = Yii::$app->security->generateRandomString(20);
                     $db_file->file = $db_file->slug . ".$file->extension";
                     $db_file->title = $file->name;
@@ -90,5 +94,61 @@ class FileUpload extends Model
             Image::thumbnail($origin_path, $width, $height)->save(Yii::getAlias($newFileDist), ['quality' => $quality]);
         }
         return true;
+    }
+
+    /**
+     * @throws \yii\base\Exception
+     * @throws ErrorException
+     * @throws NotFoundHttpException
+     * @throws ServerErrorHttpException
+     */
+    public function update(array $files, int $id): array
+    {
+        $file = $this->findModel($id);
+        $thumbs = $file->getThumbs();
+        $this->deleteOldFiles($thumbs);
+
+        return $this->upload($files);
+    }
+
+    /**
+     * @throws ErrorException
+     */
+    public function deleteOldFiles(array $thumbs): void
+    {
+        $base = Url::base();
+        foreach ($thumbs as $thumb) {
+            if (unlink("$base{$thumb['path']}")) {
+                continue;
+            }
+            throw new ErrorException("Fayllarni o'chirishda xatolik yuk berdi");
+        }
+    }
+
+    /**
+     * @throws NotFoundHttpException
+     */
+    public function findModel(int $id): File
+    {
+        $file = File::findOne($id);
+        if ($file instanceof File) {
+            return $file;
+        }
+        throw new NotFoundHttpException("Bunday file topilmadi");
+    }
+
+    /**
+     * @throws \Throwable
+     * @throws ErrorException
+     * @throws StaleObjectException
+     * @throws NotFoundHttpException
+     */
+    public function delete(int $id): bool|int
+    {
+        $file = $this->findModel($id);
+        $thumbs = $file->getThumbs();
+        $this->deleteOldFiles($thumbs);
+
+        return $file->delete();
     }
 }
