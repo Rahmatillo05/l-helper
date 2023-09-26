@@ -24,7 +24,7 @@ class UserProfileForm extends Model
             [['user_id'], 'required'],
             [['user_id', 'image_id'], 'default', 'value' => null],
             [['user_id', 'image_id'], 'integer'],
-            [['bio', 'first_name', 'first_name', 'address', 'birth_date'], 'string'],
+            [['bio', 'first_name', 'birth_date', 'first_name', 'address'], 'string'],
             [['social_accounts'], 'safe'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
@@ -44,7 +44,7 @@ class UserProfileForm extends Model
             $user_profile->first_name = $this->first_name;
             $user_profile->last_name = $this->last_name;
             $user_profile->address = $this->address;
-            $user_profile->birth_date = $this->birth_date;
+            $user_profile->birth_date = strtotime($this->birth_date);
             if ($user_profile->save()){
                 return $user_profile;
             }

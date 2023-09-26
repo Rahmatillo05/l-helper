@@ -19,7 +19,7 @@ class m230916_105149_create_user_profile_table extends Migration
             'first_name' => $this->string(),
             'last_name' => $this->string(),
             'address' => $this->string(),
-            'birth_date' => $this->date(),
+            'birth_date' => $this->integer(),
             'bio' => $this->text(),
             'social_accounts' => $this->json(),
         ]);

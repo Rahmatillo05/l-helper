@@ -43,8 +43,8 @@ class UserProfile extends \yii\db\ActiveRecord
         return [
             [['user_id'], 'required'],
             [['user_id', 'image_id'], 'default', 'value' => null],
-            [['user_id', 'image_id'], 'integer'],
-            [['bio', 'first_name', 'first_name', 'address', 'birth_date'], 'string'],
+            [['user_id', 'image_id', 'birth_date'], 'integer'],
+            [['bio', 'first_name', 'first_name', 'address'], 'string'],
             [['social_accounts'], 'safe'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
