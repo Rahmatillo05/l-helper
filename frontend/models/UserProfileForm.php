@@ -24,8 +24,7 @@ class UserProfileForm extends Model
             [['user_id'], 'required'],
             [['user_id', 'image_id'], 'default', 'value' => null],
             [['user_id', 'image_id'], 'integer'],
-            [['bio', 'first_name', 'first_name', 'address'], 'string'],
-            [['birth_date'], 'date'],
+            [['bio', 'first_name', 'first_name', 'address', 'birth_date'], 'string'],
             [['social_accounts'], 'safe'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
