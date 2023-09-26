@@ -42,6 +42,10 @@ class UserProfileForm extends Model
             $user_profile->bio = $this->bio;
             $user_profile->image_id = $this->image_id;
             $user_profile->social_accounts = $this->social_accounts;
+            $user_profile->first_name = $this->first_name;
+            $user_profile->last_name = $this->last_name;
+            $user_profile->address = $this->address;
+            $user_profile->birth_date = $this->birth_date;
             if ($user_profile->save()){
                 return $user_profile;
             }

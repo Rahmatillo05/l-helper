@@ -51,18 +51,6 @@ class UserProfile extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels(): array
-    {
-        return [
-            'user_id' => 'User ID',
-            'image_id' => 'Image ID',
-            'bio' => 'Bio',
-            'social_accounts' => 'Social Accounts',
-        ];
-    }
 
     /**
      * Gets query for [[User]].
