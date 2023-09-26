@@ -13,6 +13,10 @@ use yii\db\ActiveQuery;
  * @property int $user_id
  * @property int|null $image_id
  * @property string|null $bio
+ * @property string|null $first_name
+ * @property string|null $last_name
+ * @property string|null $address
+ * @property string|null $birth_date
  * @property string|null $social_accounts
  *
  * @property User $user
@@ -40,8 +44,9 @@ class UserProfile extends \yii\db\ActiveRecord
             [['user_id'], 'required'],
             [['user_id', 'image_id'], 'default', 'value' => null],
             [['user_id', 'image_id'], 'integer'],
-            [['bio'], 'string'],
+            [['bio', 'first_name', 'first_name', 'address'], 'string'],
             [['social_accounts'], 'safe'],
+            [['birth_date'], 'date'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -64,7 +69,7 @@ class UserProfile extends \yii\db\ActiveRecord
      *
      * @return ActiveQuery
      */
-    public function getUser()
+    public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }

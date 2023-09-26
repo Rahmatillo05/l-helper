@@ -16,6 +16,10 @@ class m230916_105149_create_user_profile_table extends Migration
         $this->createTable('{{%user_profile}}', [
             'user_id' => $this->integer()->notNull(),
             'image_id' => $this->integer(),
+            'first_name' => $this->string(),
+            'last_name' => $this->string(),
+            'address' => $this->string(),
+            'birth_date' => $this->date(),
             'bio' => $this->text(),
             'social_accounts' => $this->json(),
         ]);

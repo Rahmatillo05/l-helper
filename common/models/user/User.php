@@ -5,7 +5,9 @@ namespace common\models\user;
 use common\components\Detect;
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 use yii\web\ForbiddenHttpException;
 use yii\web\IdentityInterface;
 
@@ -54,6 +56,18 @@ class User extends ActiveRecord implements IdentityInterface
             ['status', 'default', 'value' => Detect::STATUS_INACTIVE],
             ['status', 'in', 'range' => [Detect::STATUS_ACTIVE, Detect::STATUS_INACTIVE]],
         ];
+    }
+
+    public function fields()
+    {
+        return ArrayHelper::merge(parent::fields(), [
+            'detail'
+        ]);
+    }
+
+    public function getDetail(): ActiveQuery
+    {
+        return $this->hasOne(UserProfile::class, ['user_id' => 'id']);
     }
 
     /**

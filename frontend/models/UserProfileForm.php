@@ -2,7 +2,7 @@
 
 namespace frontend\models;
 
-use common\components\Helper;
+use common\components\Detect;
 use common\models\user\User;
 use common\models\user\UserProfile;
 use yii\base\Model;
@@ -12,6 +12,10 @@ class UserProfileForm extends Model
     public $user_id;
     public $bio;
     public $image_id;
+    public $first_name;
+    public $last_name;
+    public $address;
+    public $birth_date;
 
     public $social_accounts;
     public function rules()
@@ -20,7 +24,8 @@ class UserProfileForm extends Model
             [['user_id'], 'required'],
             [['user_id', 'image_id'], 'default', 'value' => null],
             [['user_id', 'image_id'], 'integer'],
-            [['bio'], 'string'],
+            [['bio', 'first_name', 'first_name', 'address'], 'string'],
+            [['birth_date'], 'date'],
             [['social_accounts'], 'safe'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
