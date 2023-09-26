@@ -4,8 +4,10 @@ namespace common\models\user;
 
 use common\models\user\search\UserProfileQuery;
 use common\models\user\search\UserQuery;
+use frontend\modules\file\models\File;
 use Yii;
 use yii\db\ActiveQuery;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "user_profile".
@@ -50,7 +52,17 @@ class UserProfile extends \yii\db\ActiveRecord
         ];
     }
 
+    public function fields()
+    {
+        return ArrayHelper::merge(parent::fields(), [
+            'image'
+        ]);
+    }
 
+    public function getImage(): ?File
+    {
+        return File::findOne($this->image_id);
+    }
     /**
      * Gets query for [[User]].
      *
