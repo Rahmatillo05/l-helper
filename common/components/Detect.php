@@ -11,4 +11,8 @@ class Detect
     const COMMON_USER = 1;
     const ORGANIZATION = 2;
 
+    const ACTIVE = 1;
+    const INACTIVE = 0;
+    const WORKER = 3;
+
 }

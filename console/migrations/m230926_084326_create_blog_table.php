@@ -34,18 +34,12 @@ class m230926_084326_create_blog_table extends Migration
         $this->addForeignKey('fk-to-user-from-blog', 'blog', 'author_id', 'user', 'id', 'CASCADE', 'CASCADE');
 
         $this->createIndex(
-            '{{%idx-blog-category_id}}',
+            '{{%idx-category_id}}',
             '{{%blog}}',
             'category_id'
         );
-        $this->addForeignKey('fk-to-category-from-blog', 'blog', 'category_id', 'blog_category', 'id');
+        $this->addForeignKey('fk-to-category-from-blog', 'blog', 'category_id', 'category', 'id');
 
-        $this->createIndex(
-            '{{%idx-blog-data_category_id}}',
-            '{{%blog}}',
-            'data_category_id'
-        );
-        $this->addForeignKey('fk-to-data-category-from-blog', 'blog', 'data_category_id', 'data_category', 'id');
     }
 
     /**
@@ -58,16 +52,8 @@ class m230926_084326_create_blog_table extends Migration
             '{{%blog}}'
         );
         $this->dropIndex(
-            '{{%idx-blog-category_id}}',
+            '{{%idx-category_id}}',
             '{{%blog}}'
-        );
-        $this->dropIndex(
-            '{{%idx-blog-data_category_id}}',
-            '{{%blog}}'
-        );
-        $this->dropForeignKey(
-            'fk-to-data-category-from-blog',
-            'blog'
         );
         $this->dropForeignKey(
             'fk-to-category-from-blog',

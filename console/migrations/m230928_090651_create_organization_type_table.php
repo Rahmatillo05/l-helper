@@ -20,6 +20,17 @@ class m230928_090651_create_organization_type_table extends Migration
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
         ]);
+        $this->batchInsert('organization_type', [
+            'name',
+            'slug',
+            'created_at',
+            'updated_at',
+        ],
+            [
+                ['Maktab', 'school', time(), time()],
+                ['Ommaviy kutubxona', 'public_library', time(), time()],
+                ['Kitob do\'koni', 'book_store', time(), time()]
+            ]);
     }
 
     /**

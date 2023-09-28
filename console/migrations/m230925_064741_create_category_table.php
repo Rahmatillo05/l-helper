@@ -3,16 +3,16 @@
 use yii\db\Migration;
 
 /**
- * Handles the creation of table `{{%book_category}}`.
+ * Handles the creation of table `{{%blog_category}}`.
  */
-class m230925_064758_create_book_category_table extends Migration
+class m230925_064741_create_category_table extends Migration
 {
     /**
      * {@inheritdoc}
      */
     public function safeUp()
     {
-        $this->createTable('{{%book_category}}', [
+        $this->createTable('{{%category}}', [
             'id' => $this->primaryKey(),
             'data_category_id' => $this->integer(),
             'name' => $this->string(),
@@ -21,8 +21,8 @@ class m230925_064758_create_book_category_table extends Migration
             'updated_at' => $this->integer()
         ]);
         $this->addForeignKey(
-            'fk-to-data_category-from-book_category',
-            'book_category',
+            'fk-to-data_category-from-category',
+            'category',
             'data_category_id',
             'data_category',
             'id'
@@ -34,8 +34,7 @@ class m230925_064758_create_book_category_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropForeignKey('fk-to-data_category-from-book_category', 'book_category');
-
-        $this->dropTable('{{%book_category}}');
+        $this->dropForeignKey('fk-to-data_category-from-category', 'category');
+        $this->dropTable('{{%category}}');
     }
 }

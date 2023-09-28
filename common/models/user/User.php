@@ -3,7 +3,9 @@
 namespace common\models\user;
 
 use common\components\Detect;
+use common\models\organization\Organization;
 use Yii;
+use yii\base\Exception;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -23,6 +25,7 @@ use yii\web\IdentityInterface;
  * @property integer $created_at
  * @property integer $status
  * @property integer $user_type
+ * @property integer|null $organization_id
  * @property integer $updated_at
  * @property string $password write-only password
  */
@@ -32,7 +35,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%user}}';
     }
@@ -40,7 +43,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             TimestampBehavior::class,
@@ -50,19 +53,26 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             ['status', 'default', 'value' => Detect::STATUS_INACTIVE],
             ['status', 'in', 'range' => [Detect::STATUS_ACTIVE, Detect::STATUS_INACTIVE]],
+            ['user_type', 'in', 'range' => [Detect::COMMON_USER, Detect::ORGANIZATION, Detect::WORKER]],
+            [['organization_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organization::class, 'targetAttribute' => ['organization_id' => 'id']],
         ];
     }
 
-    public function fields()
+    public function fields(): array
     {
         return ArrayHelper::merge(parent::fields(), [
             'detail'
         ]);
+    }
+
+    public function getOrganization(): ActiveQuery
+    {
+        return $this->hasOne(Organization::class, ['id' => 'organization_id']);
     }
 
     public function getDetail(): ActiveQuery
@@ -115,7 +125,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public function getAuthKey()
+    public function getAuthKey(): ?string
     {
         return $this->auth_key;
     }
@@ -123,7 +133,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public function validateAuthKey($authKey)
+    public function validateAuthKey($authKey): ?bool
     {
         return $this->getAuthKey() === $authKey;
     }
@@ -143,16 +153,18 @@ class User extends ActiveRecord implements IdentityInterface
      * Generates password hash from password and sets it to the model
      *
      * @param string $password
+     * @throws Exception
      */
-    public function setPassword(string $password)
+    public function setPassword(string $password): void
     {
         $this->password_hash = Yii::$app->security->generatePasswordHash($password);
     }
 
     /**
      * Generates "remember me" authentication key
+     * @throws Exception
      */
-    public function generateAuthKey()
+    public function generateAuthKey(): void
     {
         $this->auth_key = Yii::$app->security->generateRandomString();
     }

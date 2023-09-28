@@ -18,7 +18,6 @@ class m230928_092226_create_organization_detail_table extends Migration
     public function safeUp()
     {
         $this->createTable('{{%organization_detail}}', [
-            'id' => $this->primaryKey(),
             'organization_id' => $this->integer(),
             'user_id' => $this->integer(),
             'address' => $this->string(),

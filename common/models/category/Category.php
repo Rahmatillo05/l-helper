@@ -1,14 +1,14 @@
 <?php
 
-namespace common\models\categories;
+namespace common\models\category;
 
-use common\models\category\DataCategory;
-use yii\behaviors\TimestampBehavior;
+use common\models\blog\Blog;
+use common\models\book\Book;
+use Yii;
 use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
 
 /**
- * This is the model class for table "blog_category".
+ * This is the model class for table "category".
  *
  * @property int $id
  * @property int|null $data_category_id
@@ -17,25 +17,20 @@ use yii\db\ActiveRecord;
  * @property int|null $created_at
  * @property int|null $updated_at
  *
+ * @property Blog[] $blogs
+ * @property Book[] $books
  * @property DataCategory $dataCategory
  */
-class BlogCategory extends ActiveRecord
+class Category extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName(): string
     {
-        return 'blog_category';
+        return 'category';
     }
-    public function behaviors(): array
-    {
-        return [
-            [
-                'class' => TimestampBehavior::class
-            ]
-        ];
-    }
+
     /**
      * {@inheritdoc}
      */
@@ -62,6 +57,26 @@ class BlogCategory extends ActiveRecord
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
+    }
+
+    /**
+     * Gets query for [[Blogs]].
+     *
+     * @return ActiveQuery
+     */
+    public function getBlogs(): ActiveQuery
+    {
+        return $this->hasMany(Blog::class, ['category_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[Books]].
+     *
+     * @return ActiveQuery
+     */
+    public function getBooks(): ActiveQuery
+    {
+        return $this->hasMany(Book::class, ['category_id' => 'id']);
     }
 
     /**

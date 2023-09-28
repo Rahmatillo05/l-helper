@@ -57,10 +57,10 @@ class m230928_093507_create_book_table extends Migration
 
         // add foreign key for table `{{%book_category}}`
         $this->addForeignKey(
-            '{{%fk-book-category_id}}',
+            '{{%fk-category_id}}',
             '{{%book}}',
             'category_id',
-            '{{%book_category}}',
+            '{{%category}}',
             'id',
             'CASCADE'
         );
@@ -102,7 +102,7 @@ class m230928_093507_create_book_table extends Migration
 
         // drops foreign key for table `{{%book_category}}`
         $this->dropForeignKey(
-            '{{%fk-book-category_id}}',
+            '{{%fk-category_id}}',
             '{{%book}}'
         );
 
