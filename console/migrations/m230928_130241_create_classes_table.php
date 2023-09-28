@@ -8,14 +8,14 @@ use yii\db\Migration;
  *
  * - `{{%organization}}`
  */
-class m230928_130241_create_class_table extends Migration
+class m230928_130241_create_classes_table extends Migration
 {
     /**
      * {@inheritdoc}
      */
     public function safeUp()
     {
-        $this->createTable('{{%class}}', [
+        $this->createTable('{{%classes}}', [
             'id' => $this->primaryKey(),
             'school_id' => $this->integer(),
             'name' => $this->string(),
@@ -27,14 +27,14 @@ class m230928_130241_create_class_table extends Migration
         // creates index for column `school_id`
         $this->createIndex(
             '{{%idx-class-school_id}}',
-            '{{%class}}',
+            '{{%classes}}',
             'school_id'
         );
 
         // add foreign key for table `{{%organization}}`
         $this->addForeignKey(
             '{{%fk-class-school_id}}',
-            '{{%class}}',
+            '{{%classes}}',
             'school_id',
             '{{%organization}}',
             'id',
@@ -50,15 +50,15 @@ class m230928_130241_create_class_table extends Migration
         // drops foreign key for table `{{%organization}}`
         $this->dropForeignKey(
             '{{%fk-class-school_id}}',
-            '{{%class}}'
+            '{{%classes}}'
         );
 
         // drops index for column `school_id`
         $this->dropIndex(
             '{{%idx-class-school_id}}',
-            '{{%class}}'
+            '{{%classes}}'
         );
 
-        $this->dropTable('{{%class}}');
+        $this->dropTable('{{%classes}}');
     }
 }

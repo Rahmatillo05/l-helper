@@ -28,6 +28,7 @@ class m230928_131401_create_member_table extends Migration
             'address' => $this->string(),
             'phone' => $this->string(),
             'status' => $this->smallInteger()->defaultValue(1),
+            'member_type' => $this->integer()->defaultValue(1),
             'created_at' => $this->integer(),
             'updated_at' => $this->integer()
         ]);
@@ -78,7 +79,7 @@ class m230928_131401_create_member_table extends Migration
             '{{%fk-member-class_id}}',
             '{{%member}}',
             'class_id',
-            '{{%class}}',
+            '{{%classes}}',
             'id',
             'CASCADE'
         );

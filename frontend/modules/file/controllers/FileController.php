@@ -58,7 +58,7 @@ class FileController extends BaseController
      * @throws BadRequestHttpException
      * @throws NotFoundHttpException
      */
-    public function actionUpload(): array|File
+    public function actionUpload()
     {
         $model = new FileUpload();
         /* Create */
@@ -74,7 +74,7 @@ class FileController extends BaseController
 
         /* Update */
         if ($this->request->isPut || $this->request->isPatch) {
-            $id = Yii::$app->request->post('id');
+            $id = (int)Yii::$app->request->getQueryParam('id');
             if ($id) {
                 $files = UploadedFile::getInstancesByName('files');
                 if ($files) {
